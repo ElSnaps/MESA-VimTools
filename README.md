@@ -1,2 +1,2 @@
-## MESA-ServerTools
-General purpose server tools used on Mesa.
+## MESA-VimTools
+General purpose vim tools used on Mesa.
