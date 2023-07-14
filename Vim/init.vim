@@ -21,7 +21,7 @@ set softtabstop=4
 
 " Install Plugins
 call plug#begin()
-    
+
 	" Theme
 	Plug 'rebelot/kanagawa.nvim'
 
@@ -31,17 +31,38 @@ call plug#begin()
 	" Telescope
 	Plug 'nvim-telescope/telescope.nvim'
 
+	" Conquer of Completion
+	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+	" Copilot
+	"Plug 'github/copilot.vim'
+
 	" Lightline
 	Plug 'itchyny/lightline.vim'
 
+	" Signify
+	Plug 'mhinz/vim-signify'
+
+	" Better whitespace
+	Plug 'ntpeters/vim-better-whitespace'
+
 call plug#end()
+
+"-----------------------------------------------------------
+"	CONQUER OF COMPLETION
+"-----------------------------------------------------------
+
+let g:coc_global_extensions = ['coc-clangd', 'coc-rust-analyzer', 'coc-highlight']
+let g:coc_disable_startup_warning = 1
+" Controls-sorta
+inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 "-----------------------------------------------------------
 "	KEYBINDING
 "-----------------------------------------------------------
 
 " Apply Theme
-colorscheme kanagawa
+"colorscheme kanagawa-lotus
 
 " VIM Default Keyset Override
 noremap <C-h> <C-w><Up>
