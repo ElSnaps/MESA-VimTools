@@ -17,3 +17,5 @@ sudo rm -rf ~/.config/nvim
 # Remove conquer of completion
 sudo rm -rf ~/.config/coc
 
+# Autoremove additional deps
+sudo apt autoremove -y
