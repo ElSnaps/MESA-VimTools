@@ -14,11 +14,11 @@ sudo cp nvim-linux64/bin/nvim /bin/
 sudo rm -rf nvim-linux64*
 
 # Install neovim plug.
-curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
+sudo curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # Install nodejs dependency for coc.
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs
+sudo curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs
 
 # Install rip-grep dependency for telescope.
 wget https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb
