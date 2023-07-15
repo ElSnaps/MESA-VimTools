@@ -14,7 +14,7 @@ sudo cp nvim-linux64/bin/nvim /bin/
 sudo rm -rf nvim-linux64*
 
 # Install neovim plug.
-sudo curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
+curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # Install nodejs dependency for coc.
@@ -28,8 +28,8 @@ rg --version
 sudo rm -rf ripgrep_13.0.0_amd64*
 
 # Install neovim config
-sudo mkdir -p ~/.config/nvim
-sudo cp init.vim ~/.config/nvim
+mkdir -p ~/.config/nvim
+cp init.vim ~/.config/nvim
 
 # Install Plugins
 nvim +PlugInstall +qall
