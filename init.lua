@@ -2,7 +2,7 @@
 
 -- nvim configuration
 vim.o.number		= true
-vim.o.mouse			= a
+vim.o.mouse			= 'a'
 vim.o.tabstop		= 4
 vim.o.shiftwidth	= 4
 vim.o.softtabstop	= 4
@@ -19,9 +19,6 @@ vim.api.nvim_set_keymap('n', '<C-h>', '<C-w><Up>', { noremap = true, silent = tr
 vim.api.nvim_set_keymap('n', '<C-j>', '<C-w><Down>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<C-k>', '<C-w><Left>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<C-l>', '<C-w><Right>', { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap('n', '<S-A-o>', ':Telescope find_files hidden=true<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<S-A-s>', ':Telescope live_grep<CR>', { noremap = true, silent = true })
 
 -- bootstrap lazyvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -52,11 +49,22 @@ require("lazy").setup({
 
 	-- theme
 	{
-		"morhetz/gruvbox"
+		"sekke276/dark_flat.nvim"
 	},
 
+	-- tabs
+	{
+		"romgrk/barbar.nvim",
+		dependencies = {
+			"lewis6991/gitsigns.nvim", -- OPTIONAL: for git status
+		},
+		init = function() vim.g.barbar_auto_setup = false end,
+    },
+
 	-- status line
-	{ "nvim-lualine/lualine.nvim" },
+	{
+		"nvim-lualine/lualine.nvim"
+	},
 
 	-- workspace persistence
 	{
@@ -65,7 +73,9 @@ require("lazy").setup({
 	},
 
 	-- version control - line markers
-	{ "mhinz/vim-signify" },
+	{
+		"mhinz/vim-signify"
+	},
 
 	-- parser
 	{
@@ -80,7 +90,8 @@ require("lazy").setup({
 					'rust'
 				},
 				highlight = {
-					enable = true
+					enable = true,
+					additional_vim_regex_highlighting = true,
 				}
 			}
 		end
@@ -93,6 +104,7 @@ require("lazy").setup({
 		cmd = "Telescope"
 	},
 
+	-- autocomplete
 	{
 		"neoclide/coc.nvim",
 		branch = "release",
@@ -105,7 +117,6 @@ require("lazy").setup({
 		branch = "v3.x",
 		dependencies = {
 		  "nvim-lua/plenary.nvim",
-		  "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
 		  "MunifTanjim/nui.nvim",
 		}
 	},
@@ -117,69 +128,89 @@ require("lazy").setup({
 		opts = {}
 	},
 
-	-- error log
+	-- terminal
 	{
-		"folke/trouble.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" }
+		"akinsho/nvim-toggleterm.lua",
 	},
 
-	-- terminal
-	{ "akinsho/toggleterm.nvim" },
-
 	-- copilot
-	{ "github/copilot.vim" },
+	{
+		"github/copilot.vim",
+		event = "VeryLazy",
+		cmd = {
+			'Copilot',
+		},
+	},
 
 	-- whitespace marker
-	{ "ntpeters/vim-better-whitespace" },
+	{
+		"ntpeters/vim-better-whitespace"
+	},
 
 })
 
-vim.cmd("colorscheme gruvbox")
+
+
+-- BEGIN THEME CONFIGURATION
+
+vim.cmd("colorscheme dark_flat")
+
+-- Make line numbers brighter
+vim.cmd("highlight LineNr guifg=#454545")
+
+-- Make the border between windows darker
+vim.cmd("highlight VertSplit guifg=#454545")
+
+-- END THEME CONFIGURATION
+
+
+
+-- BEGIN LUALINE CONFIGURATION
 
 require('lualine').setup {
-  options = {
-    icons_enabled = true,
-    theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
-    disabled_filetypes = {
-      statusline = {},
-      winbar = {},
-    },
-    ignore_focus = {},
-    always_divide_middle = true,
-    globalstatus = false,
-    refresh = {
-      statusline = 1000,
-      tabline = 1000,
-      winbar = 1000,
-    }
-  },
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {},
-  winbar = {},
-  inactive_winbar = {},
-  extensions = {}
+	options = {
+		icons_enabled = false,
+		theme = 'auto',
+		component_separators = { left = '', right = ''},
+		section_separators = { left = '', right = ''},
+	},
+	sections = {
+        lualine_a = {'mode',},
+		lualine_b = {'filename'},
+		lualine_c = {'branch'},
+	},
 }
 
-require("toggleterm").setup{
-	open_mapping = [[A-t]]
+-- END LUALINE CONFIGURATION
+
+
+
+-- BEGIN BARBAR CONFIGURATION
+
+require('barbar').setup {
+	auto_hide = true,
+	animation = false,
+	clickable = false,
+
+	insert_at_end = false,
+	insert_at_start = true,
+
+	icons = {
+		filetype = {
+			enabled = false,
+		}
+	},
+
+	sidebar_filetypes = {
+		["neo-tree"] = { event = 'BufWipeout' },
+	}
 }
+
+-- END BARBAR CONFIGURATION
+
+
+
+-- BEGIN CONQUER OF COMPLETION CONFIGURATION
 
 -- Setting global extensions for coc
 vim.g.coc_global_extensions = {'coc-clangd', 'coc-rust-analyzer', 'coc-highlight'}
@@ -191,3 +222,101 @@ vim.g.coc_disable_startup_warning = 1
 vim.g.coc_filetype_map = {
   cppm = 'clangd'
 }
+
+-- END CONQUER OF COMPLETION CONFIGURATION
+
+
+
+-- BEGIN TERMINAL CONFIGURATION
+
+-- Setting up the terminal
+require('toggleterm').setup({
+	open_mapping = '<A-t>',
+    direction = 'horizontal',
+	shell = "powershell.exe -nologo",
+})
+
+-- END TERMINAL CONFIGURATION
+
+
+
+-- BEGIN NEO TREE CONFIGURATION
+
+require('neo-tree').setup({
+	quit_on_last_window = true,
+	enable_git_status = true,
+
+})
+
+-- END NEO TREE CONFIGURATION
+
+
+
+-- Tab mappings
+local map = vim.api.nvim_set_keymap
+local opts = { noremap = true, silent = true }
+
+-- Move to previous/next
+map('n', '<A-,>', '<Cmd>BufferPrevious<CR>', opts)
+map('n', '<A-.>', '<Cmd>BufferNext<CR>', opts)
+-- Re-order to previous/next
+map('n', '<A-<>', '<Cmd>BufferMovePrevious<CR>', opts)
+map('n', '<A->>', '<Cmd>BufferMoveNext<CR>', opts)
+-- Goto buffer in position...
+map('n', '<A-1>', '<Cmd>BufferGoto 1<CR>', opts)
+map('n', '<A-2>', '<Cmd>BufferGoto 2<CR>', opts)
+map('n', '<A-3>', '<Cmd>BufferGoto 3<CR>', opts)
+map('n', '<A-4>', '<Cmd>BufferGoto 4<CR>', opts)
+map('n', '<A-5>', '<Cmd>BufferGoto 5<CR>', opts)
+map('n', '<A-6>', '<Cmd>BufferGoto 6<CR>', opts)
+map('n', '<A-7>', '<Cmd>BufferGoto 7<CR>', opts)
+map('n', '<A-8>', '<Cmd>BufferGoto 8<CR>', opts)
+map('n', '<A-9>', '<Cmd>BufferGoto 9<CR>', opts)
+map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
+-- Pin/unpin buffer
+map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
+-- Close buffer
+map('n', '<A-c>', '<Cmd>BufferClose<CR>', opts)
+-- Wipeout buffer
+--                 :BufferWipeout
+-- Close commands
+--                 :BufferCloseAllButCurrent
+--                 :BufferCloseAllButPinned
+--                 :BufferCloseAllButCurrentOrPinned
+--                 :BufferCloseBuffersLeft
+--                 :BufferCloseBuffersRight
+-- Magic buffer-picking mode
+map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
+-- Sort automatically by...
+map('n', '<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>', opts)
+map('n', '<Space>bd', '<Cmd>BufferOrderByDirectory<CR>', opts)
+map('n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>', opts)
+map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
+
+
+
+-- BEGIN TELESCOPE REMAPS
+
+vim.api.nvim_set_keymap('n', '<S-A-o>', ':Telescope find_files hidden=true<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<S-A-s>', ':Telescope live_grep<CR>', { noremap = true, silent = true })
+
+-- END TELESCOPE REMAPS
+
+
+
+-- BEGOM PAGE SCROLLING REMAPS
+
+-- remap pg dn / up to move screen by X lines
+vim.api.nvim_set_keymap('n', '<PageUp>', '10<C-y>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<PageDown>', '10<C-e>', { noremap = true, silent = true })
+
+-- remap ctrl pg up to move screen to top of file
+vim.api.nvim_set_keymap('n', '<C-PageUp>', 'gg', { noremap = true, silent = true })
+
+-- remap ctrl pg down to move screen to bottom of file + half the screen
+vim.api.nvim_set_keymap('n', '<C-PageDown>', 'Gzz', { noremap = true, silent = true })
+
+-- END PAGE SCROLLING REMAPS
+
+
+
