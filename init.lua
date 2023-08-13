@@ -37,6 +37,10 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- plugins to checkout
+-- ms-jpq/chadtree
+-- ms-jpq-coq_nvim
+
 -- install plugins
 require("lazy").setup({
 
@@ -87,6 +91,12 @@ require("lazy").setup({
 		"nvim-telescope/telescope.nvim",
 		dependencies = "nvim-treesitter/nvim-treesitter",
 		cmd = "Telescope"
+	},
+
+	{
+		"neoclide/coc.nvim",
+		branch = "release",
+		build = ":CocUpdate"
 	},
 
 	-- file system browser
@@ -169,4 +179,15 @@ require('lualine').setup {
 
 require("toggleterm").setup{
 	open_mapping = [[A-t]]
+}
+
+-- Setting global extensions for coc
+vim.g.coc_global_extensions = {'coc-clangd', 'coc-rust-analyzer', 'coc-highlight'}
+
+-- Disabling the startup warning for coc
+vim.g.coc_disable_startup_warning = 1
+
+-- Mapping filetypes for coc
+vim.g.coc_filetype_map = {
+  cppm = 'clangd'
 }
