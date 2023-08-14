@@ -84,15 +84,27 @@ require("lazy").setup({
 		config = function()
 			require('nvim-treesitter.configs').setup {
 				ensure_installed = {
-					'bash',
-					'c',
-					'cpp',
-					'rust'
+					"c",
+					"cpp",
+					"rust",
+					"lua",
+					"bash",
+					"markdown",
+					"markdown_inline"
 				},
 				highlight = {
 					enable = true,
-					additional_vim_regex_highlighting = true,
+
+					-- enables treesitter + :h syntax at the same time. this allows us to
+					-- manually override syntax highlighting for specific languages like
+					-- c++ for modules where import and export aren't yet supported.
+					additional_vim_regex_highlighting = { "c", "cpp" },
+				},
+				set_custom_captures = {
+					-- Highlight the @foo.bar capture group with the "Identifier" highlight group.
+					['type'] = 'cppModule',
 				}
+
 			}
 		end
 	},
@@ -147,21 +159,176 @@ require("lazy").setup({
 		"ntpeters/vim-better-whitespace"
 	},
 
+	{
+		"mg979/vim-visual-multi"
+	},
+
 })
-
-
 
 -- BEGIN THEME CONFIGURATION
 
+
+
 vim.cmd("colorscheme dark_flat")
 
--- Make line numbers brighter
-vim.cmd("highlight LineNr guifg=#454545")
+require('dark_flat').setup({
 
--- Make the border between windows darker
-vim.cmd("highlight VertSplit guifg=#454545")
+	colors = {
 
--- END THEME CONFIGURATION
+		black				= "#000000",
+		white				= "#ffffff",
+
+		background			= "#171717",
+		background_alt		= "#171717",
+
+		light_grey			= "#8f8f8f",
+		dark_grey			= "#454545",
+
+		emerald				= "#82f4a2",
+		emerald_dark		= "#66b580",
+		emerald_light		= "#a6ffcc",
+
+		red					= "#ff0000",
+	},
+
+	themes = function(colors)
+		return {
+
+			-- Find modifiable groups in dark_flat/themes/groups.lua
+
+			-- @TODO: Hide errors from clangd, they are crap, just give suggestions
+			-- please mr COC.
+
+			-- @TODO: SETUP :h syntax for c++ modules (import + export keywords)
+			-- probably dark_flat theme has a group for these already.
+
+			-- @TODO: SET :h syntax to be light_grey unless a word we specifically
+			-- want to highlight is found.
+
+			-- @TODO: Fix statusline BG (unless???)
+
+			-- THEME COLORS
+
+			-- set background color of non-current buffers
+			NormalNC						= { bg = colors.background_alt },
+
+			-- set line numbers and divider colors
+			LineNr							= { fg = colors.dark_grey },
+			VertSplit						= { fg = colors.dark_grey },
+
+			-- TELESCOPE COLORS
+			TelescopeBorder					= { fg = colors.light_grey },
+			TelescopeNormal					= { fg = colors.light_grey },
+			TelescopePromptCounter			= { fg = colors.emerald_light },
+			TelescopeTitle					= { fg = colors.emerald_light },
+
+			-- TREESITTER COLORS
+			["@annotation"]					= { fg = colors.light_grey },
+			["@attribute"]					= { fg = colors.light_grey },
+			["@boolean"]					= { fg = colors.light_grey },
+			["@character"]					= { fg = colors.light_grey },
+			["@character.special"]			= { fg = colors.light_grey },
+			["@comment"]					= { fg = colors.dark_grey },
+			["@conditional"]				= { fg = colors.light_grey },
+			["@constant"]					= { fg = colors.light_grey },
+			["@constant.builtin"]			= { fg = colors.light_grey },
+			["@constant.macro"]				= { fg = colors.light_grey },
+			["@constructor"]				= { fg = colors.light_grey },
+			["@debug"]						= { fg = colors.light_grey },
+			["@define"]						= { fg = colors.light_grey },
+			["@error"]						= { fg = colors.light_grey },
+			["@exception"]					= { fg = colors.light_grey },
+			["@field"]						= { fg = colors.light_grey },
+			["@float"]						= { fg = colors.light_grey },
+			["@function"]					= { fg = colors.emerald_dark },
+			["@function.builtin"]			= { fg = colors.light_grey },
+			["@function.call"]				= { fg = colors.light_grey },
+			["@function.macro"]				= { fg = colors.light_grey },
+			["@include"]					= { fg = colors.light_grey },
+			["@keyword"]					= { fg = colors.light_grey },
+			["@keyword.function"]			= { fg = colors.light_grey },
+			["@keyword.operator"]			= { fg = colors.light_grey },
+			["@keyword.return"]				= { fg = colors.light_grey },
+			["@label"]						= { fg = colors.light_grey },
+			["@method"]						= { fg = colors.light_grey },
+			["@method.call"]				= { fg = colors.light_grey },
+			["@namespace"]					= { fg = colors.light_grey },
+			["@none"]						= { fg = colors.light_grey },
+			["@number"]						= { fg = colors.light_grey },
+			["@operator"]					= { fg = colors.light_grey },
+			["@parameter"]					= { fg = colors.light_grey },
+			["@parameter.reference"]		= { fg = colors.light_grey },
+			["@preproc"]					= { fg = colors.light_grey },
+			["@property"]					= { fg = colors.light_grey },
+			["@punctuation.bracket"]		= { fg = colors.light_grey },
+			["@punctuation.delimiter"]		= { fg = colors.light_grey },
+			["@punctuation.special"]		= { fg = colors.light_grey },
+			["@repeat"]						= { fg = colors.light_grey },
+			["@storageclass"]				= { fg = colors.light_grey },
+			["@string"]						= { fg = colors.light_grey },
+			["@string.escape"]				= { fg = colors.light_grey },
+			["@string.regex"]				= { fg = colors.light_grey },
+			["@string.special"]				= { fg = colors.light_grey },
+			["@symbol"]						= { fg = colors.light_grey },
+			["@tag"]						= { fg = colors.light_grey },
+			["@tag.attribute"]				= { fg = colors.light_grey },
+			["@tag.delimiter"]				= { fg = colors.light_grey },
+			["@text"]						= { fg = colors.light_grey },
+			["@text.danger"]				= { fg = colors.light_grey },
+			["@text.emphasis"]				= { fg = colors.light_grey },
+			["@text.environment"]			= { fg = colors.light_grey },
+			["@text.environment.name"]		= { fg = colors.light_grey },
+			["@text.literal"]				= { fg = colors.light_grey },
+			["@text.math"]					= { fg = colors.light_grey },
+			["@text.note"]					= { fg = colors.light_grey },
+			["@text.reference"]				= { fg = colors.light_grey },
+			["@text.strike"]				= { fg = colors.light_grey },
+			["@text.strong"]				= { fg = colors.light_grey },
+			["@text.title"]					= { fg = colors.light_grey },
+			["@text.underline"]				= { fg = colors.light_grey },
+			["@text.uri"]					= { fg = colors.light_grey },
+			["@text.warning"]				= { fg = colors.light_grey },
+			["@todo"]						= { fg = colors.red },
+			["@type"]						= { fg = colors.emerald_light },
+			["@type.builtin"]				= { fg = colors.light_grey },
+			["@type.definition"]			= { fg = colors.light_grey },
+			["@type.qualifier"]				= { fg = colors.light_grey },
+			["@variable"]					= { fg = colors.light_grey },
+			["@variable.builtin"]			= { fg = colors.light_grey },
+
+			-- SEMANTIC TOKENS
+			["@lsp.mod.deprecated"]			= { fg = colors.light_grey, strikethrough = true },
+			["@lsp.mod.documentation"]		= { link = "@constant" },
+			["@lsp.type.class"]				= { link = "@type" },
+			["@lsp.type.comment"]			= { link = "@comment" },
+			["@lsp.type.enum"]				= { link = "@type" },
+			["@lsp.type.enumMember"]		= { link = "@constant" },
+			["@lsp.type.function"]			= { link = "@function" },
+			["@lsp.type.macro"]				= { link = "@function" },
+			["@lsp.type.method"]			= { link = "@function" },
+			["@lsp.type.namespace"]			= { link = "@namespace" },
+			["@lsp.type.number"]			= { link = "@number" },
+			["@lsp.type.operator"]			= { link = "@operator" },
+			["@lsp.type.parameter"]			= { link = "@parameter" },
+			["@lsp.type.property"]			= { link = "@property" },
+			["@lsp.type.string"]			= { link = "@string" },
+			["@lsp.type.struct"]			= { link = "@type" },
+			["@lsp.type.typeParameter"]		= { link = "@type" },
+
+		}
+	end,
+
+})
+
+-- enable highlighting on module imports
+vim.cmd("highlight cppModule guibg=blue")
+
+-- enable highlighting on using statements
+-- @TODO: Fix this one.
+vim.cmd("syntax keyword cUsing using")
+vim.cmd("highlight cUsing guibg=blue")
+
+-- END SYNTAX HIGHLIGHTING CONFIGURATION
 
 
 
